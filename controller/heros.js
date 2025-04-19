@@ -161,7 +161,7 @@ const getAllHeros = async (req, res) => {
             .skip((pages - 1) * limit)
             .limit(limit);
 
-        res.status(200).json({ heroes: heros })
+        res.status(200).json({ success: true, data: heros })
     } catch (error) {
         return next(error)
     }
@@ -175,7 +175,7 @@ const getSingleHero = async (req, res) => {
         if (!hero)
             throw new CustomError(404, `No Hero with id ${id}`)
 
-        res.status(200).json({ heroes: hero })
+        res.status(200).json({ success: true, data: hero })
     } catch (error) {
         return next(error)
     }
@@ -191,7 +191,7 @@ const searchHero = async (req, res) => {
             }
         }).select('-_id')
 
-        res.status(200).json({ heroes: results })
+        res.status(200).json({ success: true, data: results })
     } catch (error) {
         return next(error)
     }
@@ -200,7 +200,7 @@ const searchHero = async (req, res) => {
 const getRandomHero = async (req, res) => {
     const randomNumber = Math.floor(Math.random() * 730)
     const hero = await Hero.findOne({ "heroId": randomNumber }).select('-_id')
-    res.status(200).json({ heroes: hero })
+    res.status(200).json({ success: true, data: hero })
 }
 
 
