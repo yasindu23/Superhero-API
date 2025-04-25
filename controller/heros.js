@@ -1,14 +1,17 @@
 const Hero = require('../model/hero')
 const CustomError = require('../errors/customError')
 
-const getAllHeros = async (req, res) => {
+const getAllHeroes = async (req, res) => {
     try {
-        const { alignment, gender, sort, numerics, fields, name } = req.query
+        const { alignment, gender, sort, numerics, fields, search } = req.query
 
         let queryObject = {}
 
-        if (name) {
-            queryObject['data.name'] = name
+        if (search) {
+            queryObject['data.name'] = {
+                '$regex': search,
+                '$options': 'i'
+            }
         }
 
         if (alignment) {
@@ -160,12 +163,12 @@ const getAllHeros = async (req, res) => {
         const pages = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
 
-        const heros = await task
+        const heroes = await task
             .select('-_id')
             .skip((pages - 1) * limit)
             .limit(limit);
 
-        res.status(200).json({ success: true, data: heros })
+        res.status(200).json({ success: true, data: heroes })
     } catch (error) {
         return next(error)
     }
@@ -185,22 +188,6 @@ const getSingleHero = async (req, res) => {
     }
 }
 
-const searchHero = async (req, res) => {
-    try {
-        const searchResult = req.query.name
-        const results = await Hero.find({
-            'data.name': {
-                '$regex': searchResult,
-                '$options': 'i'
-            }
-        }).select('-_id')
-
-        res.status(200).json({ success: true, data: results })
-    } catch (error) {
-        return next(error)
-    }
-}
-
 const getRandomHero = async (req, res) => {
     const randomNumber = Math.floor(Math.random() * 730)
     const hero = await Hero.findOne({ "heroId": randomNumber }).select('-_id')
@@ -209,8 +196,7 @@ const getRandomHero = async (req, res) => {
 
 
 module.exports = {
-    getAllHeros,
+    getAllHeroes,
     getSingleHero,
-    searchHero,
     getRandomHero
 }

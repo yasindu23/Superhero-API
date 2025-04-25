@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/v1/heros', heroRouter)
+app.use('/api/v1/heroes', heroRouter)
 
 app.use(errorHandler)
 app.use(notFound)
