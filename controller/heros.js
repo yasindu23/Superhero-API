@@ -3,9 +3,13 @@ const CustomError = require('../errors/customError')
 
 const getAllHeros = async (req, res) => {
     try {
-        const { alignment, gender, sort, numerics, fields } = req.query
+        const { alignment, gender, sort, numerics, fields, name } = req.query
 
         let queryObject = {}
+
+        if (name) {
+            queryObject['data.name'] = name
+        }
 
         if (alignment) {
             queryObject['data.biography.alignment'] = alignment
@@ -67,7 +71,7 @@ const getAllHeros = async (req, res) => {
             })
         }
 
-        let taks = Hero.find(queryObject)
+        let task = Hero.find(queryObject)
 
         if (sort) {
             const validItems = [
@@ -115,7 +119,7 @@ const getAllHeros = async (req, res) => {
             if (!items.join(',')) {
                 throw new CustomError(404, 'no items to sort')
             }
-            taks = taks.sort(items.join(','))
+            task = task.sort(items.join(','))
         }
 
         if (fields) {
@@ -150,13 +154,13 @@ const getAllHeros = async (req, res) => {
             })
 
             const fieldItems = setupedItems.join(' ')
-            taks = taks.select(fieldItems)
+            task = task.select(fieldItems)
         }
 
         const pages = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
 
-        const heros = await taks
+        const heros = await task
             .select('-_id')
             .skip((pages - 1) * limit)
             .limit(limit);
