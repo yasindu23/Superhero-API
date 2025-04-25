@@ -120,7 +120,7 @@ const getAllHeroes = async (req, res) => {
             });
 
             if (!items.join(',')) {
-                throw new CustomError(404, 'no items to sort')
+                throw new CustomError(200, 'no items to sort')
             }
             task = task.sort(items.join(','))
         }
@@ -180,7 +180,7 @@ const getSingleHero = async (req, res) => {
         const hero = await Hero.findOne({ "heroId": Number(id) }).select('-_id')
 
         if (!hero)
-            throw new CustomError(404, `No Hero with id ${id}`)
+            throw new CustomError(200, `No Hero with id ${id}`)
 
         res.status(200).json({ success: true, data: hero })
     } catch (error) {

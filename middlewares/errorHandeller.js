@@ -7,7 +7,7 @@ const errorHandeller = (err, req, res, next) => {
     }
 
     console.log(`system error ${err.message}`)
-    res.status(500).json({ success: false, data: err.message })
+    res.status(200).json({ success: false, data: err.message })
 }
 
 module.exports = errorHandeller
