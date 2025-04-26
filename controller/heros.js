@@ -1,7 +1,7 @@
 const Hero = require('../model/hero')
 const CustomError = require('../errors/customError')
 
-const getAllHeroes = async (req, res) => {
+const getAllHeroes = async (req, res, next) => {
     try {
         const { alignment, gender, sort, numerics, fields, search } = req.query
 
@@ -174,7 +174,7 @@ const getAllHeroes = async (req, res) => {
     }
 }
 
-const getSingleHero = async (req, res) => {
+const getSingleHero = async (req, res, next) => {
     try {
         const id = req.params.id
         const hero = await Hero.findOne({ "heroId": Number(id) }).select('-_id')
@@ -188,10 +188,14 @@ const getSingleHero = async (req, res) => {
     }
 }
 
-const getRandomHero = async (req, res) => {
-    const randomNumber = Math.floor(Math.random() * 730)
-    const hero = await Hero.findOne({ "heroId": randomNumber }).select('-_id')
-    res.status(200).json({ success: true, data: hero })
+const getRandomHero = async (req, res, next) => {
+    try {
+        const randomNumber = Math.floor(Math.random() * 730)
+        const hero = await Hero.findOne({ "heroId": randomNumber }).select('-_id')
+        res.status(200).json({ success: true, data: hero })
+    } catch (error) {
+        return next(error)
+    }
 }
 
 
