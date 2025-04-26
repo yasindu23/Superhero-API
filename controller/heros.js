@@ -85,7 +85,13 @@ const getAllHeroes = async (req, res, next) => {
                 'speed',
                 '-speed',
                 'power',
-                '-power'
+                '-power',
+                'durability',
+                '-durability',
+                'strength',
+                '-strength',
+                'combat',
+                '-combat'
             ]
 
             // remove all null values
@@ -115,6 +121,18 @@ const getAllHeroes = async (req, res, next) => {
                             return 'data.powerstats.power'
                         case '-power':
                             return '-data.powerstats.power'
+                        case 'durability':
+                            return 'data.powerstats.durability'
+                        case '-durability':
+                            return '-data.powerstats.durability'
+                        case 'strength':
+                            return 'data.powerstats.strength'
+                        case '-strength':
+                            return '-data.powerstats.strength'
+                        case 'combat':
+                            return 'data.powerstats.combat'
+                        case '-combat':
+                            return '-data.powerstats.combat'
                     }
                 }
             });
