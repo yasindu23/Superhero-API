@@ -25,7 +25,7 @@ const getAllHeroes = async (req, res, next) => {
             const operatorMap = {
                 '>': '$gt',
                 '>=': '$gte',
-                '=': '$eq',
+                '>>': '$eq', // equals do with the '>>'
                 '<': '$lt',
                 '<=': '$lte',
             };
@@ -38,7 +38,7 @@ const getAllHeroes = async (req, res, next) => {
                 'combat'
             ];
 
-            const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+            const regEx = /\b(<|>|>=|>>|<|<=)\b/;
             numerics.split(',').forEach((e) => {
                 const filteredValue = e.replace(regEx, (match) => `-${operatorMap[match]}-`)
                 const [field, simble, value] = filteredValue.split('-')
@@ -94,15 +94,13 @@ const getAllHeroes = async (req, res, next) => {
                 '-combat'
             ]
 
-            // remove all null values
-            sort.split(',').forEach((element) => {
-                if (validItems.includes(element))
-                    queryObject[`data.powerstats.${element}`] = { $ne: NaN }
-            })
-
             const items = sort.split(',').map(element => {
                 if (validItems.includes(element)) {
-                    queryObject[element] = { $ne: null }
+                    queryObject[`data.powerstats.${element}`] = {
+                        $exists: true,
+                        $ne: null,
+                        $nin: ["null", "NaN"]
+                    }
 
                     switch (element) {
                         case 'heroId':
@@ -140,7 +138,7 @@ const getAllHeroes = async (req, res, next) => {
             if (!items.join(',')) {
                 throw new CustomError(200, 'no items to sort')
             }
-            task = task.sort(items.join(','))
+            task = task.find(queryObject).sort(items.join(','))
         }
 
         if (fields) {
