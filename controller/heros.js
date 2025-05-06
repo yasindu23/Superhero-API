@@ -177,7 +177,7 @@ const getAllHeroes = async (req, res, next) => {
         }
 
         const pages = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 10;
+        const limit = Number(req.query.limit) || 12;
 
         const heroes = await task
             .select('-_id')
